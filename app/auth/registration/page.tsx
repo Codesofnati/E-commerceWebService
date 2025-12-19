@@ -9,54 +9,71 @@ import { AiOutlineEye } from "react-icons/ai";
 
 
 interface User {
-  fName: string
-  lName: string
-  sex: string
-  pass: string
+  firstName: string
+  lastName: string
+  gender: string
+  password: string
   email: string
   age: number | ""
-
-
 }
 
 export default function registration() {
   const inputClass = "shadow-sm p-3 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-400";
   const [users, setUsers] = useState<User[]>([]);
-  const [fName, setFName] = useState("");
-  const [lName, setLName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [sex, setSex] = useState("");
+  const [gender, setGender] = useState("");
   const [age, setAge] = useState<number | "">("");
-  const [pass, setPass] = useState("");
-  const [confirmPass, setConfirmPass] = useState("");
-  
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword]= useState(false);
   const [showConPassword, setShowConPassword]= useState(false);
+
   const passwordVisibility =() =>{
     setShowPassword(prev => !prev)
   }
    const conPasswordVisibility =() =>{
     setShowConPassword(prev => !prev)
   }
+
+  const addUser = async () => {
+   try {
+      const res = await fetch("https://localhost:8081/user/register",
+         { method: "POST",
+           body: JSON.stringify(users)
+           });
+
+      if (res.ok) {
+        console.log(users)
+     }
+     console.log("not added")
+    } catch {
+
+    }
+
+    
+  };
+
 const submitHandle = (e: React.FormEvent) => {
   e.preventDefault();
-  if (pass != confirmPass){
+  if (password != confirmPassword){
     alert("Password do not match!")
     return;
   }
   const newUser: User ={
-     fName, lName, sex, age, email, pass
+     firstName, lastName, gender, age, email, password
   }
   setUsers([...users, newUser])
+  addUser()
   alert("User registered successfully")
-  setFName("")
-  setLName("")
+  setFirstName("")
+  setLastName("")
   setAge("")
-  setSex("")
+  setGender("")
   setEmail("")
-  setPass("")
-  setConfirmPass("")
-  console.log(newUser)
+  setPassword("")
+  setConfirmPassword("")
   // your logic
 }
 
@@ -103,15 +120,15 @@ const submitHandle = (e: React.FormEvent) => {
             <input
               className={inputClass}
               placeholder="First Name"
-              value={fName}
-              onChange={(e) => setFName(e.target.value)}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               required
             />
             <input
               className={inputClass}
               placeholder="Last Name"
-              value={lName}
-              onChange={(e) => setLName(e.target.value)}
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
               required
             />
            
@@ -129,8 +146,8 @@ const submitHandle = (e: React.FormEvent) => {
               className={`${inputClass} w-full`}
               placeholder="Password"
               type={showPassword? "text": "password"}
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button type='button' onClick={passwordVisibility}  
@@ -146,8 +163,8 @@ const submitHandle = (e: React.FormEvent) => {
               className={`${inputClass} w-full`}
               placeholder="Confirmation Password"
               type={showConPassword? "text" :"password"}
-              value={confirmPass}
-              onChange={(e) => setConfirmPass(e.target.value)}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
             
@@ -168,15 +185,15 @@ const submitHandle = (e: React.FormEvent) => {
             />
              <div className='flex item-center gap-1 '>
               <span className=' p-2 mr-10'>
-                Sex
+                Gender
               </span>
               <label className='flex items-center gap-2 mr-3'>
                 <input 
                 type='radio'
-                name='sex'
+                name='gender'
                 value="male"
-                checked={sex === "male"}
-                onChange={(e)=> setSex(e.target.value)}
+                checked={gender === "male"}
+                onChange={(e)=> setGender(e.target.value)}
                 className="accent-orange-400 "
                 required
                 />
@@ -186,9 +203,9 @@ const submitHandle = (e: React.FormEvent) => {
                 <input
                 type='radio'
                 value="female"
-                name='sex'
-                checked={sex === "female"}
-                onChange={(e)=> setSex(e.target.value)}
+                name='gender'
+                checked={gender === "female"}
+                onChange={(e)=> setGender(e.target.value)}
                 required
                 />
                 Female
