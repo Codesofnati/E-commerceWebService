@@ -1,11 +1,6 @@
-import Image from "next/image";
-import Login from "./auth/Login";
-import Registration from "./auth/Registration";
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <div>
-      <Registration/>
-    </div>
-  );
+   redirect('/auth/login');
+
 }
