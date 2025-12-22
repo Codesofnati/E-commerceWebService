@@ -9,7 +9,7 @@ import { AiOutlineEye } from "react-icons/ai";
 
 interface User {
   
-  pass: string
+  password: string
   email: string
 
 
@@ -17,7 +17,7 @@ interface User {
 export default function login() {
   const inputClass = "shadow-sm p-3 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-400";
   const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
+  const [password, setPass] = useState("");
   const [showPassword, setShowPassword]= useState(false);
  
   const passwordVisibility =() =>{
@@ -28,11 +28,31 @@ const submitHandle = (e: React.FormEvent) => {
   e.preventDefault();
   
   const newUser: User ={
-     email, pass
+     email, password
   }
-  alert("User registered successfully")
   setEmail("")
   setPass("")
+  fetch("https://localhost:8081/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email, password })
+  })
+    .then(async (res) => {
+      if (!res.ok) {
+        const error = await res.text();
+        throw new Error(error || "Login failed");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      alert("Login successful");
+      // handle login success, e.g., save token, redirect, etc.
+    })
+    .catch((err) => {
+      alert("Login failed: " + err.message);
+    });
   console.log(newUser)
 }
 
@@ -84,7 +104,7 @@ const submitHandle = (e: React.FormEvent) => {
               className={`${inputClass} w-full`}
               placeholder="Password"
               type={showPassword? "text": "password"}
-              value={pass}
+              value={password}
               onChange={(e) => setPass(e.target.value)}
               required
             />
