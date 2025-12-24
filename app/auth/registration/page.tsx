@@ -37,23 +37,35 @@ export default function registration() {
     setShowConPassword(prev => !prev)
   }
 
-  const addUser = async () => {
-   try {
-      const res = await fetch("https://localhost:8081/user/register",
-         { method: "POST",
-           body: JSON.stringify(users)
-           });
+const addUser = async () => {
+  try {
+    const userToSend = {
+      firstName,
+      lastName,
+      gender,
+      password,
+      email,
+      age,
+    };
+    const res = await fetch("https://localhost:8081/user/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userToSend),
+    });
 
-      if (res.ok) {
-        console.log(users)
-     }
-     console.log("not added")
-    } catch {
-
+    if (!res.ok) {
+      throw new Error("Registration failed");
     }
 
-    
-  };
+    const data = await res.text(); // or res.json()
+    console.log(data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
 const submitHandle = (e: React.FormEvent) => {
   e.preventDefault();
@@ -64,16 +76,15 @@ const submitHandle = (e: React.FormEvent) => {
   const newUser: User ={
      firstName, lastName, gender, age, email, password
   }
-  setUsers([...users, newUser])
-  addUser()
-  alert("User registered successfully")
-  setFirstName("")
-  setLastName("")
-  setAge("")
-  setGender("")
-  setEmail("")
-  setPassword("")
-  setConfirmPassword("")
+  setUsers([newUser]);
+  addUser();
+  setFirstName("");
+  setLastName("");
+  setAge("");
+  setGender("");
+  setEmail("");
+  setPassword("");
+  setConfirmPassword("");
   // your logic
 }
 
@@ -180,7 +191,7 @@ const submitHandle = (e: React.FormEvent) => {
               placeholder="Age"
               type="number"
               value={age}
-              onChange={(e) => setAge(Number(e.target.value))}
+              onChange={(e) => setAge(e.target.value === "" ? "" : Number(e.target.value))}
               required
             />
              <div className='flex item-center gap-1 '>
